@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia" namespace="Loyalty\Model">
+    <table name="loyalty">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="min" type="FLOAT" />
+        <column name="max" type="FLOAT" />
+        <column name="amount" type="FLOAT" />
+    </table>
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

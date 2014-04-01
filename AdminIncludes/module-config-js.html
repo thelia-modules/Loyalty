@@ -1,0 +1,10 @@
+{if $module_code == 'Loyalty'}
+<script>
+    $(function() {
+        // Set proper variable ID in delete from
+        $('a.config-delete').click(function(ev) {
+            $('#variable_delete_id').val($(this).data('id'));
+        });
+    });
+</script>
+{/if}
