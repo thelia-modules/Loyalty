@@ -4,11 +4,13 @@ With this module, you can reward the loyalty of your customers.
 
 ## Installation
 
+**This module require [Credit account](https://github.com/thelia-modules/CreditAccount) module.**
+
 with git
 
 ```
 $ cd local/modules
-$ git clone https://github.com/thelia-modules/CreditAccount
+$ git clone https://github.com/thelia-modules/Loyalty
 ```
 
 If you want to download the zip from github, rename the unzip folder as ```Loyalty```, github suffix the zip and the folder with the current branch name.
