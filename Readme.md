@@ -1,6 +1,6 @@
 #Loyalty
 
-This module allow you to manage
+With this module, you can reward the loyalty of your customers.
 
 ## Installation
 
