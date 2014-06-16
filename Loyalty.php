@@ -36,7 +36,7 @@ class Loyalty extends BaseModule
      */
     public function preActivation(ConnectionInterface $con = null)
     {
-        $return = true;
+
         $module = ModuleQuery::create()
             ->filterByCode('CreditAccount')
             ->filterByActivate(self::IS_ACTIVATED)
@@ -45,6 +45,8 @@ class Loyalty extends BaseModule
         if (null === $module) {
             throw new \RuntimeException(Translator::getInstance()->trans('CreditAccount must be installed and activated', [], 'loyalty'));
         }
+        
+        return true;
     }
 
 
