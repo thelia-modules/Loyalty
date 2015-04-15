@@ -1,65 +1,129 @@
-
+{loop type="currency" name="crncy" default_only=1}
+    {$currencySymbol = $SYMBOL}
+{/loop}
 
 <div class="row">
     <div class="col-md-12">
         <form action="{url path='/admin/loyalty/update'}" method="post">
             <div class="general-block-decorator">
-                <div class="table-responsive">
-                    <table class="table table-striped table-condensed table-left-aligned">
-                        <caption class="clearfix">
-                            {intl l='Thelia loyalty system'}
-                                <div class="pull-right">
-                                    <a class="btn btn-default btn-primary action-btn" title="{intl l='Add a new variable'}" href="#creation_dialog" data-toggle="modal">
-                                        <span class="glyphicon glyphicon-plus-sign"></span>
-                                    </a>
-                                    <button class="btn btn-default btn-primary" title="{intl l='Save chages'}"><span class="glyphicon glyphicon-ok"></span> {intl l='Save changes'}</button>
-                                </div>
 
-                        </caption>
+                <div class="well well-sm">
+                    {intl l="You can define here the amount credited to the loyalty account of your customers, according to the cart amount. Cart amount is the cart total, excluding shipping costs." d='loyalty.ai'}
+                </div>
 
-                        <thead>
-                        <tr>
-                            <th>
-                                {intl l="minimum"}
-                            </th>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-condensed table-left-aligned">
+                                <caption class="clearfix">
+                                    {intl l='Thelia loyalty system' d='loyalty.ai'}
+                                    <div class="pull-right">
+                                        <a class="btn btn-default btn-primary action-btn" title="{intl l='Add a new slice' d='loyalty.ai'}" href="#creation_dialog" data-toggle="modal">
+                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                        </a>
+                                        <button class="btn btn-default btn-primary" title="{intl l='Save changes' d='loyalty.ai'}">
+                                            <span class="glyphicon glyphicon-ok"></span> {intl l='Save changes' d='loyalty.ai'}
+                                        </button>
+                                    </div>
+                                </caption>
 
-                            <th>
-                                {intl l="maximum"}
-                            </th>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        {intl l="From cart amount" d='loyalty.ai'}
+                                    </th>
+                                    <th>
+                                        {intl l="To cart amount" d='loyalty.ai'}
+                                    </th>
+                                    <th>
+                                        {intl l="Amount added to loyalty account" d='loyalty.ai'}
+                                    </th>
+                                    <th class="text-center">
+                                        {intl l='Action' d='loyalty.ai'}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {loop name="loyalty_list" type="loyalty" backend_context="1"}
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <input id="min_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_min[{$ID}]" value="{$MIN}"/>
+                                                <span class="input-group-addon">{$currencySymbol}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input id="max_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_max[{$ID}]" value="{$MAX}"/>
+                                                <span class="input-group-addon">{$currencySymbol}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input id="amount_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_amount[{$ID}]" value="{$AMOUNT}"/>
+                                                <span class="input-group-addon">{$currencySymbol}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a class="btn btn-default btn-xs config-delete" title="{intl l='Delete this slice' d='loyalty.ai'}" href="#delete_slice_dialog" data-id="{$ID}" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {/loop}
+                                {elseloop rel="loyalty_list"}
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-info">
+                                                {intl l="To start to use this module, create your first cart amount slice by clicking the + button." d='loyalty.ai'}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {/elseloop}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-condensed table-left-aligned">
+                                <caption class="clearfix">
+                                    {intl l='Current status of loyalty accounts' d='loyalty.ai'}
+                                </caption>
 
-                            <th>
-                                {intl l="profit"}
-                            </th>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            {intl l="Customer" d='loyalty.ai'}
+                                        </th>
+                                        <th>
+                                            {intl l="Balance" d='loyalty.ai'}
+                                        </th>
+                                    </tr>
+                                </thead>
 
-
-
-                            <th>{intl l='Action'}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {loop name="loyalty_list" type="loyalty" backend_context="1"}
-                            <tr>
-
-                                <td>
-                                    <input id="min_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_min[{$ID}]" value="{$MIN}" />
-                                </td>
-                                <td>
-                                    <input id="max_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_max[{$ID}]" value="{$MAX}" />
-                                </td>
-                                <td>
-                                    <input id="amount_{$ID}" class="js-edit form-control" data-id="{$ID}" type="text" name="loyalty_amount[{$ID}]" value="{$AMOUNT}" />
-                                </td>
-
-                                <td class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn btn-default btn-xs config-delete" title="{intl l='Delete this slice'}" href="#delete_variable_dialog" data-id="{$ID}" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
-                                        </div>
-
-                                </td>
-                            </tr>
-                        {/loop}
-                        </tbody>
-                    </table>
+                                <tbody>
+                                {loop type="credit_account" name="credit_account_list"}
+                                    <tr>
+                                        <td>
+                                            {loop type="customer" name="cust" current="false" id=$CUSTOMER_ID backend_context=1}
+                                            <a href="{url path="/admin/customer/update" customer_id=$ID}#credit_account_block">{$LASTNAME} {$FIRSTNAME}</a>
+                                            {/loop}
+                                        </td>
+                                        <td>
+                                            {format_money number=$CREDIT_AMOUNT symbol=$currencySymbol}
+                                        </td>
+                                    </tr>
+                                {/loop}
+                                {elseloop rel="credit_account_list"}
+                                    <tr>
+                                        <td colspan="2">{intl l='No loyalty account exists yet.' d='loyalty.ai'}</td>
+                                    </tr>
+                                {/elseloop}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
@@ -73,36 +137,40 @@
 
     {form_hidden_fields form=$form}
 
-    {form_field form=$form field='min'}
-        <div class="form-group {if $error}has-error{/if}">
-            <label for="{$label_attr.for}" class="control-label">{$label} : </label>
-            <input type="text" id="{$label_attr.for}" required="required" name="{$name}" value="{$value}" title="{intl l='Variable name'}" placeholder="{intl l='Variable name'}" class="form-control">
-        </div>
-    {/form_field}
+    {loop type="currency" name="default-currency" default_only="1"}
+        {$currencySymbol=$SYMBOL}
+    {/loop}
 
-    {form_field form=$form field='max'}
-        <div class="form-group {if $error}has-error{/if}">
-            <label for="{$label_attr.for}" class="control-label">{$label} : </label>
-            <input type="text" id="{$label_attr.for}" name="{$name}" value="{$value}" title="{intl l='Variable value'}" placeholder="{intl l='Variable value'}" class="form-control">
+    {custom_render_form_field form=$form field="min"}
+        <div class="input-group">
+            <input type="text" {form_field_attributes form=$form field="min"}>
+            <span class="input-group-addon">{$currencySymbol}</span>
         </div>
-    {/form_field}
+    {/custom_render_form_field}
 
-    {form_field form=$form field='amount'}
-        <div class="form-group {if $error}has-error{/if}">
-            <label for="{$label_attr.for}" class="control-label">{$label} : </label>
-            <input type="text" id="{$label_attr.for}" name="{$name}" value="{$value}" title="{intl l='Variable value'}" placeholder="{intl l='Variable value'}" class="form-control">
+    {custom_render_form_field form=$form field="max"}
+        <div class="input-group">
+            <input type="text" {form_field_attributes form=$form field="max"}>
+            <span class="input-group-addon">{$currencySymbol}</span>
         </div>
-    {/form_field}
+    {/custom_render_form_field}
+
+    {custom_render_form_field form=$form field="amount"}
+        <div class="input-group">
+            <input type="text" {form_field_attributes form=$form field="amount"}>
+            <span class="input-group-addon">{$currencySymbol}</span>
+        </div>
+    {/custom_render_form_field}
 {/capture}
 
     {include
     file = "includes/generic-create-dialog.html"
 
     dialog_id    = "creation_dialog"
-    dialog_title = {intl l="Create a new slice"}
+    dialog_title = {intl l="Create a new slice" d='loyalty.ai'}
     dialog_body  = {$smarty.capture.creation_dialog nofilter}
 
-dialog_ok_label     = {intl l="Create this slice"}
+dialog_ok_label     = {intl l="Create this slice" d='loyalty.ai'}
 
 form_action        = {url path='/admin/loyalty/create'}
 form_enctype       = {form_enctype form=$form}
@@ -113,15 +181,15 @@ form_error_message = $form_error_message
 {* Delete category confirmation dialog *}
 
 {capture "delete_dialog"}
-    <input type="hidden" name="slice_id" id="variable_delete_id" value="" />
+    <input type="hidden" name="slice_id" id="slice_delete_id" value=""/>
 {/capture}
 
 {include
 file = "includes/generic-confirm-dialog.html"
 
-dialog_id       = "delete_variable_dialog"
-dialog_title    = {intl l="Delete a loyalty slice"}
-dialog_message  = {intl l="Do you really want to delete this slice ?"}
+dialog_id       = "delete_slice_dialog"
+dialog_title    = {intl l="Delete a loyalty slice" d='loyalty.ai'}
+dialog_message  = {intl l="Do you really want to delete this slice ?" d='loyalty.ai'}
 
 form_action         = {url path='/admin/loyalty/delete'}
 form_content        = {$smarty.capture.delete_dialog nofilter}

@@ -12,10 +12,10 @@
 
 namespace Loyalty\Form;
 
+use Loyalty\Loyalty;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
-
 
 /**
  * Class LoyaltyCreateForm
@@ -24,27 +24,6 @@ use Thelia\Form\BaseForm;
  */
 class LoyaltyCreateForm extends BaseForm
 {
-
-    /**
-     *
-     * in this function you add all the fields you need for your Form.
-     * Form this you have to call add method on $this->formBuilder attribute :
-     *
-     * $this->formBuilder->add("name", "text")
-     *   ->add("email", "email", array(
-     *           "attr" => array(
-     *               "class" => "field"
-     *           ),
-     *           "label" => "email",
-     *           "constraints" => array(
-     *               new \Symfony\Component\Validator\Constraints\NotBlank()
-     *           )
-     *       )
-     *   )
-     *   ->add('age', 'integer');
-     *
-     * @return null
-     */
     protected function buildForm()
     {
         $this->formBuilder
@@ -52,28 +31,19 @@ class LoyaltyCreateForm extends BaseForm
                 'constraints' => [
                     new NotBlank()
                 ],
-                'label' => Translator::getInstance()->trans("minimum"),
-                'label_attr' => [
-                    'for' => 'loyalty_min'
-                ]
+                'label' => Translator::getInstance()->trans("From cart amount", [], Loyalty::MODULE_DOMAIN)
             ])
             ->add('max', 'number', [
                 'constraints' => [
                     new NotBlank()
                 ],
-                'label' => Translator::getInstance()->trans("maximum"),
-                'label_attr' => [
-                    'for' => 'loyalty_max'
-                ]
+                'label' => Translator::getInstance()->trans("To cart amount", [], Loyalty::MODULE_DOMAIN)
             ])
             ->add('amount', 'number', [
                 'constraints' => [
                     new NotBlank()
                 ],
-                'label' => Translator::getInstance()->trans("amount"),
-                'label_attr' => [
-                    'for' => 'loyalty_amount'
-                ]
+                'label' => Translator::getInstance()->trans("Amount added to loyalty account", [], Loyalty::MODULE_DOMAIN)
             ])
         ;
     }

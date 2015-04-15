@@ -18,11 +18,5 @@ CREATE TABLE `loyalty`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `loyalty` (`id`, `min`, `max`, `amount`) VALUES
-(1, 0, 100, 5),
-(2, 100, 200, 6),
-(3, 200, 300, 10),
-(4, 300, 1e+06, 20);
-
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
