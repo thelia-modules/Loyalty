@@ -14,12 +14,13 @@ namespace Loyalty\EventListeners;
 
 use CreditAccount\CreditAccount;
 use CreditAccount\Event\CreditAccountEvent;
+use CreditAccount\Model\CreditAmountHistory;
+use CreditAccount\Model\CreditAmountHistoryQuery;
 use Loyalty\Model\LoyaltyQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
-
 
 /**
  * Class LoyaltyListener
@@ -28,12 +29,11 @@ use Thelia\Core\Event\TheliaEvents;
  */
 class LoyaltyListener implements EventSubscriberInterface
 {
-
     public function updateCreditAccount(OrderEvent $event)
     {
         $order = $event->getOrder();
 
-        if ($order->isPaid()) {
+        if ($order->isPaid(true)) {
             $total = $order->getTotalAmount();
 
             $loyaltySlice = LoyaltyQuery::create()
@@ -44,33 +44,23 @@ class LoyaltyListener implements EventSubscriberInterface
             if ($loyaltySlice) {
                 $amount = $loyaltySlice->getAmount();
 
-                $creditEvent = new CreditAccountEvent($order->getCustomer(), $amount);
+                $creditEvent = new CreditAccountEvent($order->getCustomer(), $amount, $order->getId());
+
+                $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
+            }
+        } else {
+            // Remove any credited amount
+            $entryList = CreditAmountHistoryQuery::create()->findByOrderId($order->getId());
+
+            /** @var CreditAmountHistory $entry */
+            foreach ($entryList as $entry) {
+                $creditEvent = new CreditAccountEvent($order->getCustomer(), - $entry->getAmount(), $order->getId());
 
                 $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
             }
         }
     }
 
-    /**
-     * Returns an array of event names this subscriber wants to listen to.
-     *
-     * The array keys are event names and the value can be:
-     *
-     *  * The method name to call (priority defaults to 0)
-     *  * An array composed of the method name to call and the priority
-     *  * An array of arrays composed of the method names to call and respective
-     *    priorities, or 0 if unset
-     *
-     * For instance:
-     *
-     *  * array('eventName' => 'methodName')
-     *  * array('eventName' => array('methodName', $priority))
-     *  * array('eventName' => array(array('methodName1', $priority), array('methodName2'))
-     *
-     * @return array The event names to listen to
-     *
-     * @api
-     */
     public static function getSubscribedEvents()
     {
         return [
