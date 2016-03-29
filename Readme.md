@@ -40,6 +40,10 @@ None
     * $MIN : minimum order amount for this slice
     * $MAX : maximum order amount for this slice
     * $AMOUNT : amount added to the customer's credit account
+    
+## version history
+
+0.6 : single slice mode added
 
 
 

@@ -18,6 +18,7 @@ use Loyalty\Model\LoyaltyQuery;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Loyalty\Loyalty as LoyaltyModule;
 
 
 /**
@@ -33,6 +34,7 @@ class LoyaltyAdminController extends BaseAdminController
             return $response;
         }
         $request = $this->getRequest();
+        
         $loyaltiesMin = $request->request->get('loyalty_min', []);
         $loyaltiesMax = $request->request->get('loyalty_max', []);
         $loyaltiesAmount = $request->request->get('loyalty_amount', []);
@@ -46,8 +48,16 @@ class LoyaltyAdminController extends BaseAdminController
                 ->setAmount($loyaltiesAmount[$id])
                 ->save();
         }
+    
+        $mode = $request->request->get('loyalty_mode', 'multiple');
+        $unique_slice_amount = $request->request->get('unique_slice_amount', '');
+        $unique_slice_credit = $request->request->get('unique_slice_credit', '');
 
-        $this->redirectToRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
+        LoyaltyModule::setConfigValue('unique_slice_amount', $unique_slice_amount);
+        LoyaltyModule::setConfigValue('unique_slice_credit', $unique_slice_credit);
+        LoyaltyModule::setConfigValue('mode', $mode);
+
+        return $this->generateRedirectFromRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
     }
 
     public function createAction()
@@ -62,13 +72,12 @@ class LoyaltyAdminController extends BaseAdminController
 
             $loyaltyForm = $this->validateForm($form);
 
-            $loyalty = (new Loyalty())
+            (new Loyalty())
                 ->setMin($loyaltyForm->get('min')->getData())
                 ->setMax($loyaltyForm->get('max')->getData())
                 ->setAmount($loyaltyForm->get('amount')->getData())
                 ->save();
 
-            $this->redirectToRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
 
         } catch(\Exception $e) {
             $this->setupFormErrorContext(
@@ -77,14 +86,9 @@ class LoyaltyAdminController extends BaseAdminController
                 $form,
                 $e
             );
-
-            return $this->render(
-                "module-configure",
-                array(
-                    "module_code" => "Loyalty",
-                )
-            );
         }
+
+        return $this->generateRedirectFromRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
     }
 
     public function deleteAction()
@@ -103,6 +107,6 @@ class LoyaltyAdminController extends BaseAdminController
             }
         }
 
-        $this->redirectToRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
+        return $this->generateRedirectFromRoute("admin.module.configure", [], ['module_code' => 'Loyalty']);
     }
 } 

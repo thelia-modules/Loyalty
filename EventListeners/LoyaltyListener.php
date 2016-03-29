@@ -16,6 +16,7 @@ use CreditAccount\CreditAccount;
 use CreditAccount\Event\CreditAccountEvent;
 use CreditAccount\Model\CreditAmountHistory;
 use CreditAccount\Model\CreditAmountHistoryQuery;
+use Loyalty\Loyalty;
 use Loyalty\Model\LoyaltyQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -25,25 +26,45 @@ use Thelia\Core\Event\TheliaEvents;
 /**
  * Class LoyaltyListener
  * @package Loyalty\EventListeners
- * @author Manuel Raynaud <mraynaud@openstudio.fr>
+ * @author Manuel Raynaud <mraynaud@openstudio.fr>, Franck Allimant <thelia@cqfdev.fr>
  */
 class LoyaltyListener implements EventSubscriberInterface
 {
+    protected function computeAmount($cartTotal)
+    {
+        $amount = false;
+
+        $mode = Loyalty::getConfigValue('mode', Loyalty::MODE_MULTIPLE_SLICES);
+echo "m=$mode";
+        if ($mode == Loyalty::MODE_MULTIPLE_SLICES) {
+            $loyaltySlice = LoyaltyQuery::create()
+                ->filterByMin($cartTotal, Criteria::LESS_EQUAL)
+                ->filterByMax($cartTotal, Criteria::GREATER_EQUAL)
+                ->findOne()
+            ;
+
+            if ($loyaltySlice) {
+                $amount = $loyaltySlice->getAmount();
+            }
+        } elseif ($mode == Loyalty::MODE_SINGLE_SLICE) {
+            if (0 < $sliceValue = Loyalty::getConfigValue('unique_slice_amount', 0)) {
+                $sliceCount = floor($cartTotal / $sliceValue);
+                
+                $amount = $sliceCount * Loyalty::getConfigValue('unique_slice_credit', 0);
+            }
+        }
+
+        return $amount;
+    }
+    
     public function updateCreditAccount(OrderEvent $event)
     {
         $order = $event->getOrder();
 
         if ($order->isPaid(true)) {
-            $total = $order->getTotalAmount();
+            $amount = $this->computeAmount($order->getTotalAmount($tax, false));
 
-            $loyaltySlice = LoyaltyQuery::create()
-                ->filterByMin($total, Criteria::LESS_EQUAL)
-                ->filterByMax($total, Criteria::GREATER_EQUAL)
-                ->findOne();
-
-            if ($loyaltySlice) {
-                $amount = $loyaltySlice->getAmount();
-
+            if ($amount > 0) {
                 $creditEvent = new CreditAccountEvent($order->getCustomer(), $amount, $order->getId());
 
                 $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
