@@ -17,6 +17,7 @@ use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Element\PropelSearchLoopInterface;
+use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 
 
@@ -62,7 +63,9 @@ class LoyaltyLoop extends BaseLoop implements PropelSearchLoopInterface
      */
     protected function getArgDefinitions()
     {
-        return new ArgumentCollection();
+        return new ArgumentCollection(
+            Argument::createAnyTypeArgument('mode', 'multiple')
+        );
     }
 
     /**

@@ -22,6 +22,9 @@ class Loyalty extends BaseModule
 {
     const MODULE_DOMAIN = 'loyalty';
 
+    const MODE_MULTIPLE_SLICES = 'multiple';
+    const MODE_SINGLE_SLICE = 'unique';
+
     /**
      *
      * return false if CreditAccount module is not present
@@ -49,5 +52,10 @@ class Loyalty extends BaseModule
     {
         $database = new Database($con->getWrappedConnection());
         $database->insertSql(null, [__DIR__ . "/Config/thelia.sql"]);
+
+        $this->setConfigValue('mode', self::MODE_MULTIPLE_SLICES);
+
+        $this->setConfigValue('unique_slice_amount', 0);
+        $this->setConfigValue('unique_slice_credit', 0);
     }
 }
