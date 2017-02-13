@@ -69,16 +69,6 @@ echo "m=$mode";
 
                 $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
             }
-        } else {
-            // Remove any credited amount
-            $entryList = CreditAmountHistoryQuery::create()->findByOrderId($order->getId());
-
-            /** @var CreditAmountHistory $entry */
-            foreach ($entryList as $entry) {
-                $creditEvent = new CreditAccountEvent($order->getCustomer(), - $entry->getAmount(), $order->getId());
-
-                $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
-            }
         }
     }
 
