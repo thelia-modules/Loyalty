@@ -35,7 +35,7 @@ class LoyaltyListener implements EventSubscriberInterface
         $amount = false;
 
         $mode = Loyalty::getConfigValue('mode', Loyalty::MODE_MULTIPLE_SLICES);
-echo "m=$mode";
+
         if ($mode == Loyalty::MODE_MULTIPLE_SLICES) {
             $loyaltySlice = LoyaltyQuery::create()
                 ->filterByMin($cartTotal, Criteria::LESS_EQUAL)
