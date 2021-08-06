@@ -27,7 +27,7 @@
     ...
     </route>
     -->
-    <route id="loyalty.update" path="/admin/loyalty/update">
+    <!--<route id="loyalty.update" path="/admin/loyalty/update">
         <default key="_controller">Loyalty\Controller\LoyaltyAdminController::updateAction</default>
     </route>
 
@@ -38,5 +38,5 @@
     <route id="loyalty.delete" path="/admin/loyalty/delete">
         <default key="_controller">Loyalty\Controller\LoyaltyAdminController::deleteAction</default>
     </route>
-
+-->
 </routes>

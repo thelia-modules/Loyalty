@@ -13,6 +13,7 @@
 namespace Loyalty\Form;
 
 use Loyalty\Loyalty;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -27,19 +28,19 @@ class LoyaltyCreateForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
-            ->add('min', 'number', [
+            ->add('min', NumberType::class, [
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => Translator::getInstance()->trans("From cart amount", [], Loyalty::MODULE_DOMAIN)
             ])
-            ->add('max', 'number', [
+            ->add('max', NumberType::class, [
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => Translator::getInstance()->trans("To cart amount", [], Loyalty::MODULE_DOMAIN)
             ])
-            ->add('amount', 'number', [
+            ->add('amount', NumberType::class, [
                 'constraints' => [
                     new NotBlank()
                 ],
@@ -51,7 +52,7 @@ class LoyaltyCreateForm extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'loyalty_create';
     }

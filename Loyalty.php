@@ -13,6 +13,7 @@
 namespace Loyalty;
 
 use Propel\Runtime\Connection\ConnectionInterface;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Core\Translation\Translator;
 use Thelia\Install\Database;
 use Thelia\Model\ModuleQuery;
@@ -48,14 +49,22 @@ class Loyalty extends BaseModule
     }
 
 
-    public function postActivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
         $database->insertSql(null, [__DIR__ . "/Config/thelia.sql"]);
 
-        $this->setConfigValue('mode', self::MODE_MULTIPLE_SLICES);
+        self::setConfigValue('mode', self::MODE_MULTIPLE_SLICES);
 
-        $this->setConfigValue('unique_slice_amount', 0);
-        $this->setConfigValue('unique_slice_credit', 0);
+        self::setConfigValue('unique_slice_amount', 0);
+        self::setConfigValue('unique_slice_credit', 0);
+    }
+
+    public static function configureServices(ServicesConfigurator $servicesConfigurator): void
+    {
+        $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
+            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->autowire(true)
+            ->autoconfigure(true);
     }
 }
