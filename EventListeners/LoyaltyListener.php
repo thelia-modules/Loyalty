@@ -19,6 +19,7 @@ use CreditAccount\Model\CreditAmountHistoryQuery;
 use Loyalty\Loyalty;
 use Loyalty\Model\LoyaltyQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
@@ -30,6 +31,18 @@ use Thelia\Core\Event\TheliaEvents;
  */
 class LoyaltyListener implements EventSubscriberInterface
 {
+    protected EventDispatcherInterface $dispatcher;
+
+    /**
+     * LoyaltyListener constructor.
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+
     protected function computeAmount($cartTotal)
     {
         $amount = false;
@@ -67,7 +80,7 @@ class LoyaltyListener implements EventSubscriberInterface
             if ($amount > 0) {
                 $creditEvent = new CreditAccountEvent($order->getCustomer(), $amount, $order->getId());
 
-                $event->getDispatcher()->dispatch(CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT, $creditEvent);
+                $this->dispatcher->dispatch($creditEvent, CreditAccount::CREDIT_ACCOUNT_ADD_AMOUNT);
             }
         }
     }

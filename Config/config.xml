@@ -19,9 +19,9 @@
     </commands>
 
 
-    <services>
+    <!--<services>
         <service id="loyalty_listener" class="Loyalty\EventListeners\LoyaltyListener">
             <tag name="kernel.event_subscriber"/>
         </service>
-    </services>
+    </services>-->
 </config>
