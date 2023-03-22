@@ -41,9 +41,9 @@ class LoyaltyAdminController extends BaseAdminController
         }
         $request = $requestStack->getCurrentRequest()->request;
         
-        $loyaltiesMin = $request->get('loyalty_min', []);
-        $loyaltiesMax = $request->get('loyalty_max', []);
-        $loyaltiesAmount = $request->get('loyalty_amount', []);
+        $loyaltiesMin = $request->all('loyalty_min');
+        $loyaltiesMax = $request->all('loyalty_max');
+        $loyaltiesAmount = $request->all('loyalty_amount');
 
         foreach ($loyaltiesMin as $id => $value) {
             $loyalty = LoyaltyQuery::create()->findPk($id);
