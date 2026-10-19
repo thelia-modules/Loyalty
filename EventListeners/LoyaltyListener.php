@@ -43,9 +43,9 @@ class LoyaltyListener implements EventSubscriberInterface
     }
 
 
-    protected function computeAmount($cartTotal)
+    protected function computeAmount(float $cartTotal): float
     {
-        $amount = false;
+        $amount = 0.0;
 
         $mode = Loyalty::getConfigValue('mode', Loyalty::MODE_MULTIPLE_SLICES);
 
@@ -57,24 +57,26 @@ class LoyaltyListener implements EventSubscriberInterface
             ;
 
             if ($loyaltySlice) {
-                $amount = $loyaltySlice->getAmount();
+                $amount = (float) $loyaltySlice->getAmount();
             }
         } elseif ($mode == Loyalty::MODE_SINGLE_SLICE) {
-            if (0 < $sliceValue = Loyalty::getConfigValue('unique_slice_amount', 0)) {
+            if (0 < $sliceValue = (float) Loyalty::getConfigValue('unique_slice_amount', 0)) {
                 $sliceCount = floor($cartTotal / $sliceValue);
                 
-                $amount = $sliceCount * Loyalty::getConfigValue('unique_slice_credit', 0);
+                $amount = $sliceCount * (float) Loyalty::getConfigValue('unique_slice_credit', 0);
             }
         }
 
         return $amount;
     }
     
-    public function updateCreditAccount(OrderEvent $event)
+    public function updateCreditAccount(OrderEvent $event): void
     {
         $order = $event->getOrder();
 
         if ($order->isPaid(true)) {
+            // Cart total without shipping costs (the tax amount is returned by reference).
+            $tax = 0;
             $amount = $this->computeAmount($order->getTotalAmount($tax, false));
 
             if ($amount > 0) {
@@ -85,7 +87,7 @@ class LoyaltyListener implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             TheliaEvents::ORDER_UPDATE_STATUS => ['updateCreditAccount', 120]

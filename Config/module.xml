@@ -24,7 +24,7 @@
         <language>en_US</language>
     </languages>
 
-    <version>2.0.1</version>
+    <version>3.0.0</version>
 
     <author>
         <name>Manuel Raynaud, Franck Allimant</name>
@@ -38,7 +38,7 @@
         <module>CreditAccount</module>
     </required>
 
-    <thelia>2.5.0</thelia>
+    <thelia>3.0.0</thelia>
 
     <stability>beta</stability>
 </module>

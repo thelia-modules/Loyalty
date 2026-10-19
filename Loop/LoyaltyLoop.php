@@ -13,6 +13,7 @@
 namespace Loyalty\Loop;
 
 use Loyalty\Model\LoyaltyQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -61,7 +62,7 @@ class LoyaltyLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createAnyTypeArgument('mode', 'multiple')
@@ -73,10 +74,10 @@ class LoyaltyLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         foreach ($loopResult->getResultDataCollection() as $loyalty) {
-            $loopResultRow = (new LoopResultRow())
+            $loopResultRow = (new LoopResultRow($loyalty))
                 ->set('ID', $loyalty->getId())
                 ->set('MIN', $loyalty->getMin())
                 ->set('MAX', $loyalty->getMax())
@@ -95,7 +96,7 @@ class LoyaltyLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         return LoyaltyQuery::create()
             ->orderByMin()

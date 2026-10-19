@@ -25,7 +25,7 @@ use Thelia\Form\BaseForm;
  */
 class LoyaltyCreateForm extends BaseForm
 {
-    protected function buildForm()
+    protected function buildForm(): void
     {
         $this->formBuilder
             ->add('min', NumberType::class, [
@@ -52,7 +52,7 @@ class LoyaltyCreateForm extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public static function getName()
+    public static function getName(): string
     {
         return 'loyalty_create';
     }

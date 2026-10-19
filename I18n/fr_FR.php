@@ -1,9 +1,30 @@
 <?php
 
-return array(
+return [
+    'Action' => 'Action',
     'Amount added to loyalty account' => 'Montant à ajouter au compte fidélité',
+    'Amount credited for each slice' => 'Montant crédité pour chaque tranche',
+    'Balance' => 'Solde',
+    'Create a new slice' => 'Créer une nouvelle tranche',
+    'Create this slice' => 'Créer cette tranche',
     'CreditAccount must be installed and activated' => 'Le module Compte Crédit doit être installé et activé.',
+    'Current status of loyalty accounts' => 'État actuel des comptes fidélité',
+    'Customer' => 'Client',
+    'Delete this slice' => 'Supprimer cette tranche',
     'From cart amount' => 'Depuis le montant d\'achats',
+    'In this mode, the customer loyalty account is credited for each constant purchase slice' => 'Dans ce mode, le compte fidélité du client est crédité pour chaque tranche d\'achat constante',
+    'In this mode, you can define several slices, with a specific amount for each slice.' => 'Dans ce mode, vous pouvez définir plusieurs tranches, avec un montant spécifique pour chacune.',
+    'Loyalty configuration saved.' => 'Configuration de la fidélité enregistrée.',
+    'Loyalty slice created.' => 'Tranche de fidélité créée.',
+    'Loyalty slice deleted.' => 'Tranche de fidélité supprimée.',
+    'No loyalty account exists yet.' => 'Aucun compte fidélité pour le moment.',
+    'Save' => 'Enregistrer',
+    'Slice amount' => 'Montant de la tranche',
     'To cart amount' => 'Jusqu\'au montant d\'achats',
-    'loyalty slice creation' => 'Création d\'une tranche de gain fidelité',
-);
+    'To start to use this module, create your first cart amount slice with the form below.' => 'Pour commencer, créez votre première tranche de montant d\'achats avec le formulaire ci-dessous.',
+    'Use multiple slices' => 'Utiliser plusieurs tranches',
+    'Use only one slice' => 'Utiliser une tranche unique',
+    'Use this mode' => 'Utiliser ce mode',
+    'You can define here the amount credited to the loyalty account of your customers, according to the cart amount. Cart amount is the cart total, excluding shipping costs.' => 'Définissez ici le montant crédité sur le compte fidélité de vos clients, selon le montant de leur commande. Le montant pris en compte est le total de la commande, hors frais de port.',
+    'loyalty slice creation' => 'Création d\'une tranche de gain fidélité',
+];
