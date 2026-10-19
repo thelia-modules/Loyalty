@@ -14,56 +14,55 @@ namespace Loyalty;
 
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
+use Thelia\Core\Install\Database;
 use Thelia\Core\Translation\Translator;
-use Thelia\Install\Database;
 use Thelia\Model\ModuleQuery;
 use Thelia\Module\BaseModule;
 
 class Loyalty extends BaseModule
 {
-    const MODULE_DOMAIN = 'loyalty';
+    public const MODULE_DOMAIN = 'loyalty';
 
-    const MODE_MULTIPLE_SLICES = 'multiple';
-    const MODE_SINGLE_SLICE = 'unique';
+    public const MODE_MULTIPLE_SLICES = 'multiple';
+    public const MODE_SINGLE_SLICE = 'unique';
 
     /**
-     *
-     * return false if CreditAccount module is not present
-     *
-     * @param ConnectionInterface $con
-     * @return bool|void
+     * The CreditAccount module must be activated: loyalty credits are stored in its accounts.
      */
-    public function preActivation(ConnectionInterface $con = null)
+    public function preActivation(?ConnectionInterface $con = null): bool
     {
-
         $module = ModuleQuery::create()
             ->filterByCode('CreditAccount')
             ->filterByActivate(self::IS_ACTIVATED)
             ->findOne();
 
         if (null === $module) {
-            throw new \RuntimeException(Translator::getInstance()->trans('CreditAccount must be installed and activated', [], 'loyalty'));
+            throw new \RuntimeException(Translator::getInstance()->trans('CreditAccount must be installed and activated', [], self::MODULE_DOMAIN));
         }
-        
+
         return true;
     }
 
-
-    public function postActivation(ConnectionInterface $con = null): void
+    /**
+     * Creates the table only when it does not exist yet, and initializes the configuration only
+     * once: (re)activating the module must never wipe the configured slices.
+     */
+    public function postActivation(?ConnectionInterface $con = null): void
     {
-        $database = new Database($con->getWrappedConnection());
-        $database->insertSql(null, [__DIR__ . "/Config/thelia.sql"]);
+        $database = new Database($con);
+        $database->insertSql(null, [__DIR__.'/Config/insert.sql']);
 
-        self::setConfigValue('mode', self::MODE_MULTIPLE_SLICES);
-
-        self::setConfigValue('unique_slice_amount', 0);
-        self::setConfigValue('unique_slice_credit', 0);
+        if (null === self::getConfigValue('mode')) {
+            self::setConfigValue('mode', self::MODE_MULTIPLE_SLICES);
+            self::setConfigValue('unique_slice_amount', 0);
+            self::setConfigValue('unique_slice_credit', 0);
+        }
     }
 
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude([__DIR__.'/I18n/*'])
             ->autowire(true)
             ->autoconfigure(true);
     }
