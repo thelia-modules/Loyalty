@@ -1,5 +1,9 @@
 #Loyalty
 
+> **Deprecated.** CreditAccount 4.0 earns credit on orders by itself: tiers, a percentage of the order, excluded products and categories, and the status that triggers the earning. Use it instead of this module.
+>
+> CreditAccount 4.0 takes over the tiers of this module when it is updated (the single slice mode becomes a percentage of the order: the credit divided by the slice, rounded to two decimals), and earns nothing by itself while Loyalty is active. Deactivate Loyalty once you have checked the loyalty settings in the CreditAccount configuration. This module gets no further release.
+
 With this module, you can reward the loyalty of your customers.
 
 ## Installation
